@@ -3,11 +3,12 @@ import TodoList from '../models/TodoList';
 import TodoListItem from '../models/TodoListItem';
 
 const item = new TodoList(0, 'test', {
-    0: new TodoListItem(0, 'Сделать тестовое задание', false),
+    0: new TodoListItem(0, 'Сделать тестовое задание', true),
     1: new TodoListItem(1, 'Поговорить с Аней', true),
-    2: new TodoListItem(2, 'Поесть', true),
+    2: new TodoListItem(2, 'Поесть', false),
     3: new TodoListItem(3, 'Усомниться в reactjs', false),
-}, 4);
+    4: new TodoListItem(4, 'Стать мастером верстки: FAILED', false),
+}, 5);
 
 const initialState = {
     listsMap: {[item.id]: item},

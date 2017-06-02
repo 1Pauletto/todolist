@@ -28,6 +28,7 @@ class TodoListForm extends Component {
 
         todoListActions: React.PropTypes.shape({
             updateTodoList:React.PropTypes.func.isRequired,
+            setEditTodoList:React.PropTypes.func.isRequired,
             deleteTodoList: React.PropTypes.func.isRequired,
         })
     };
@@ -68,8 +69,16 @@ class TodoListForm extends Component {
 
     updateTodoList = (e) => {
         e.preventDefault();
-        const todoLists = new TodoListModal(this.state.id, this.state.name, this.state.items, this.state.nextItemId);
-        this.props.todoListActions.updateTodoList(todoLists);
+
+        if (this.state.name.trim().length === 0 && Object.keys(this.state.items).length === 0) {
+            this.props.todoListActions.deleteTodoList(this.state.id);
+        } else {
+            const todoLists = new TodoListModal(this.state.id, this.state.name, this.state.items, this.state.nextItemId);
+            this.props.todoListActions.updateTodoList(todoLists);
+        }
+
+        this.props.todoListActions.setEditTodoList(null);
+
         browserHistory.push(`/todolists/list`);
     };
 
@@ -121,6 +130,13 @@ class TodoListForm extends Component {
         }
     };
 
+    deleteIfEmpty = () => {
+        this.props.todoListActions.setEditTodoList(null);
+        if (this.state.name.trim().length === 0 && Object.keys(this.state.items).length === 0) {
+            this.props.todoListActions.deleteTodoList(this.state.id);
+        }
+    };
+
     render() {
         const itemsIds = Object.keys(this.state.items);
 
@@ -138,67 +154,75 @@ class TodoListForm extends Component {
         });
 
         return (
-            <div>
-                <Link to="/todolists/list">Back</Link>
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Name"
-                    value={this.state.name}
-                    onChange={e => this.changeName(e.target.value)}
-                />
-
-                {newItemsIds.map(item => {
-                    return (
-                        <TodoListItem
-                            key={`done-iten-${this.state.id}-${item.id}`}
-                            item={item}
-                            todoListId={this.state.id}
-                            isEditingTodoList={true}
-                            changeIsDoneTodoItem={this.changeIsDoneTodoItem}
-                            changeTodoItemContent={this.changeTodoItemContent}
-                            deleteTodoItem={this.deleteTodoItem}
+            <div className="row">
+                <div className="col-md-6">
+                    <div className="todolist not-done form-inline">
+                        <input
+                            type="text"
+                            className="form-control bo"
+                            placeholder="Name"
+                            value={this.state.name}
+                            onChange={e => this.changeName(e.target.value)}
                         />
-                    );
-                })}
+                        <ul className="list-unstyled">
+                            {newItemsIds.map(item => {
+                                return (
+                                    <TodoListItem
+                                        key={`done-iten-${this.state.id}-${item.id}`}
+                                        item={item}
+                                        todoListId={this.state.id}
+                                        isEditingTodoList={true}
+                                        changeIsDoneTodoItem={this.changeIsDoneTodoItem}
+                                        changeTodoItemContent={this.changeTodoItemContent}
+                                        deleteTodoItem={this.deleteTodoItem}
+                                    />
+                                );
+                            })}
+                        </ul>
 
-                <input
-                    type="text"
-                    onChange={this.changeNewTodoItemContent}
-                    value={this.state.newTodoItemContent}
-                    onKeyPress={this.handleNewTodoItemKeyPress}
-                />
-
-                {doneItemsIds.map(item => {
-                    return (
-                        <TodoListItem
-                            key={`done-iten-${this.state.id}-${item.id}`}
-                            item={item}
-                            todoListId={this.state.id}
-                            isEditingTodoList={true}
-                            changeIsDoneTodoItem={this.changeIsDoneTodoItem}
-                            deleteTodoItem={this.deleteTodoItem}
+                        <input
+                            type="text"
+                            onChange={this.changeNewTodoItemContent}
+                            value={this.state.newTodoItemContent}
+                            placeholder="Add new item"
+                            onKeyPress={this.handleNewTodoItemKeyPress}
                         />
-                    );
-                })}
 
-                <button
-                    type="submit"
-                    className="btn btn-primary"
-                    onClick={this.updateTodoList}
-                >
-                    Save
-                </button>
+                        <ul className="list-unstyled">
+                            {doneItemsIds.map(item => {
+                                return (
+                                    <TodoListItem
+                                        key={`done-iten-${this.state.id}-${item.id}`}
+                                        item={item}
+                                        todoListId={this.state.id}
+                                        isEditingTodoList={true}
+                                        changeIsDoneTodoItem={this.changeIsDoneTodoItem}
+                                        changeTodoItemContent={this.changeTodoItemContent}
+                                        deleteTodoItem={this.deleteTodoItem}
+                                    />
+                                );
+                            })}
+                        </ul>
 
-                <button
-                    type="submit"
-                    onClick={this.deleteTodoList}
-                    className="btn btn-danger"
-                >
-                    Delete
-                </button>
+                        <button
+                            type="submit"
+                            className="btn btn-primary btn-sm"
+                            onClick={this.updateTodoList}
+                        >
+                            Save
+                        </button>
 
-                <Link className="btn btn-default" to="/todolists/list">Cancel</Link>
+                        <button
+                            type="submit"
+                            onClick={this.deleteTodoList}
+                            className="btn btn-danger btn-sm"
+                        >
+                            Delete
+                        </button>
+
+                        <Link onClick={this.deleteIfEmpty} className="btn btn-default  btn-sm" to="/todolists/list">Cancel</Link>
+                    </div>
+                </div>
             </div>
         );
     }

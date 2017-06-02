@@ -22,42 +22,43 @@ export const TodoList = (props) => {
     });
 
     return (
-        <div>
-            <form>
-                <div onClick="">
-                    <Linkify properties={{target: '_blank'}}>{props.item.name}</Linkify>
-                </div>
-                <div>
-                    Id: {props.item.id}
-                </div>
-                {newItemsIds.map(item => {
-                    return (
-                        <TodoListItem
-                            key={`done-iten-${props.item.id}-${item.id}`}
-                            item={item}
-                            todoListId={props.item.id}
-                            isEditingTodoList={props.isEditingTodoList}
-                            changeIsDoneTodoItem={props.changeIsDoneTodoItem}
-                        />
-                    );
-                })}
+        <div className="row">
+            <div className="col-md-6">
+                <div className="todolist not-done">
+                    <p className="text-left todo-list-name">
+                        <Linkify properties={{target: '_blank'}}>{props.item.name}</Linkify>
+                    </p>
+                    <ul className="list-unstyled">
+                        {newItemsIds.map(item => {
+                            return (
+                                <TodoListItem
+                                    key={`done-iten-${props.item.id}-${item.id}`}
+                                    item={item}
+                                    todoListId={props.item.id}
+                                    isEditingTodoList={props.isEditingTodoList}
+                                    changeIsDoneTodoItem={props.changeIsDoneTodoItem}
+                                />
+                            );
+                        })}
 
-                {doneItemsIds.map(item => {
-                    return (
-                        <TodoListItem
-                            key={`done-iten-${props.item.id}-${item.id}`}
-                            item={item}
-                            todoListId={props.item.id}
-                            isEditingTodoList={props.isEditingTodoList}
-                            changeIsDoneTodoItem={props.changeIsDoneTodoItem}
-                        />
-                    );
-                })}
-                <div>
-                    <a className="btn btn-primary" href="" onClick={e => preventDefault(e, props.setEditTodoList, props.item.id)}>Edit</a>
-                    <a className="btn btn-danger" href="" onClick={e => preventDefault(e, props.deleteTodoList, props.item.id)}>-</a>
+                        {doneItemsIds.map(item => {
+                            return (
+                                <TodoListItem
+                                    key={`done-iten-${props.item.id}-${item.id}`}
+                                    item={item}
+                                    todoListId={props.item.id}
+                                    isEditingTodoList={props.isEditingTodoList}
+                                    changeIsDoneTodoItem={props.changeIsDoneTodoItem}
+                                />
+                            );
+                        })}
+                    </ul>
+                    <div>
+                        <a className="btn btn-primary btn-sm" href="" onClick={e => preventDefault(e, props.setEditTodoList, props.item.id)}>Edit</a>
+                        <a className="btn btn-danger btn-sm" href="" onClick={e => preventDefault(e, props.deleteTodoList, props.item.id)}>-</a>
+                    </div>
                 </div>
-            </form>
+            </div>
         </div>
     );
 };

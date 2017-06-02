@@ -34,7 +34,12 @@ class TodoLists extends Component {
 
     addTodo = (e) => {
         e.preventDefault();
-        this.props.todoListActions.createTodoList();
+        return Promise.resolve().then(() => {
+            this.props.todoListActions.createTodoList()
+        }).then(() => {
+            const lastItemId = Object.keys(this.props.todoLists.listsMap).reverse()[0];
+            this.moveToItemView(lastItemId);
+        });
     };
 
     moveToItemView = (itemId) => {
@@ -46,26 +51,38 @@ class TodoLists extends Component {
         const ids = Object.keys(this.props.todoLists.listsMap).reverse();
 
         return (
-            <div>
-                <a href="" className="btn btn-default" onClick={this.addTodo}>Add Todo Item</a> &nbsp; Count: {ids.length}
-                {ids.length ?
-                    ids.map((id, key) => {
-                        return (
-                            <TodoList
-                                key={key}
-                                item={this.props.todoLists.listsMap[id]}
-                                setEditTodoList={this.moveToItemView}
-                                deleteTodoList={this.props.todoListActions.deleteTodoList}
-                                isEditingTodoList={this.props.todoLists.editListId === id}
-                                changeIsDoneTodoItem={this.props.todoListActions.changeIsDoneTodoItem}
-                            />
-                        );
-                    })
-                    :
-                    <p>
-                        There is no any item.
-                    </p>
-                }
+            <div className="row">
+                <div className="row">
+                    <div className="text-center col-md-6" >
+                        <a
+                            href=""
+                            className="btn btn-default"
+                            onClick={this.addTodo}
+                        >
+                            Add Todo Item
+                        </a>
+                    </div>
+                </div>
+                <div className="row">
+                    {ids.length ?
+                        ids.map((id, key) => {
+                            return (
+                                <TodoList
+                                    key={key}
+                                    item={this.props.todoLists.listsMap[id]}
+                                    setEditTodoList={this.moveToItemView}
+                                    deleteTodoList={this.props.todoListActions.deleteTodoList}
+                                    isEditingTodoList={this.props.todoLists.editListId === id}
+                                    changeIsDoneTodoItem={this.props.todoListActions.changeIsDoneTodoItem}
+                                />
+                            );
+                        })
+                        :
+                        <p>
+                            There is no any item.
+                        </p>
+                    }
+                </div>
             </div>
         );
     }

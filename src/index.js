@@ -9,19 +9,13 @@ import { compose } from 'redux';
 import { Router, Route, IndexRoute, browserHistory, IndexRedirect } from 'react-router';
 import { syncHistoryWithStore} from 'react-router-redux';
 
-import promise from 'redux-promise';
-import createLogger from 'redux-logger';
-
 import App from './app/App';
 import NotFound from './app/NotFound';
 import TodoLists from './modules/todolist/TodoLists';
 import TodoListForm from './modules/todolist/TodoListForm';
 
-
-const logger = createLogger({diff: true, duration: true});
-
 const createStoreWithMiddleware = compose (
-    applyMiddleware(thunk, promise, logger),
+    applyMiddleware(thunk),
     window.devToolsExtension ? window.devToolsExtension() : f => f
 )(createStore);
 
