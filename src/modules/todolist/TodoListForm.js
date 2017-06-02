@@ -38,7 +38,8 @@ class TodoListForm extends Component {
         id: null,
         name: null,
         items: null,
-        nextItemId: null
+        nextItemId: null,
+        currentTodoList: null
     };
 
     componentWillMount() {
@@ -56,7 +57,8 @@ class TodoListForm extends Component {
             id: todoList.id,
             name: todoList.name,
             items: todoList.items,
-            nextItemId: todoList.nextItemId
+            nextItemId: todoList.nextItemId,
+            currentTodoList: todoList
         });
     }
 
@@ -70,7 +72,7 @@ class TodoListForm extends Component {
     updateTodoList = (e) => {
         e.preventDefault();
 
-        if (this.state.name.trim().length === 0 && Object.keys(this.state.items).length === 0) {
+        if (this.isEmptyEditingTodoList()) {
             this.props.todoListActions.deleteTodoList(this.state.id);
         } else {
             const todoLists = new TodoListModal(this.state.id, this.state.name, this.state.items, this.state.nextItemId);
@@ -132,10 +134,18 @@ class TodoListForm extends Component {
 
     deleteIfEmpty = () => {
         this.props.todoListActions.setEditTodoList(null);
-        if (this.state.name.trim().length === 0 && Object.keys(this.state.items).length === 0) {
+        if (this.isEmptyEditingTodoList() && this.isEmptyCachedTodoList()) {
             this.props.todoListActions.deleteTodoList(this.state.id);
         }
     };
+
+    isEmptyEditingTodoList() {
+        return this.state.name.trim().length === 0 && Object.keys(this.state.items).length === 0
+    }
+
+    isEmptyCachedTodoList() {
+        return this.state.currentTodoList.name.length === 0 && Object.keys(this.state.currentTodoList.items).length === 0;
+    }
 
     render() {
         const itemsIds = Object.keys(this.state.items);
